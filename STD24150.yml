@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: STD24150
+  description: "This is a specification of STD24001"
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8000
+paths:
+  /phones/{id}:
+    get:
+      summary: Obtenir les infos d’un téléphone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails du téléphone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+    put:
+      summary: Mettre à jour un téléphone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneUpdate'
+      responses:
+        '200':
+          description: Téléphone mis à jour
+  /phones/{id}/characteristics:
+    put:
+      summary: Mettre à jour les caractéristiques (héritage composant)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/BaseCharacteristics'
+                - $ref: '#/components/schemas/PhoneSpecificCharacteristics'
+      responses:
+        '200':
+          description: Caractéristiques mises à jour
+components:
+  schemas:
+    Phone:
+      type: object
+      properties:
+        id:
+          type: string
+        model:
+          type: string
+        brand:
+          type: string
+        characteristics:
+          $ref: '#/components/schemas/BaseCharacteristics'
+    PhoneUpdate:
+      type: object
+      properties:
+        model:
+          type: string
+        brand:
+          type: string
+        characteristics:
+          $ref: '#/components/schemas/BaseCharacteristics'
+    BaseCharacteristics:
+      type: object
+      properties:
+        color:
+          type: string
+        screenSize:
+          type: number
+          format: float
+    PhoneSpecificCharacteristics:
+      type: object
+      properties:
+        is5G:
+          type: boolean

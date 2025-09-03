@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: FastAPI Examen
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+  /phones:
+    post:
+      summary: Create a phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Phone'
+      responses:
+        '201':
+          description: Phone created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+    get:
+      summary: Get all phones
+      responses:
+        '200':
+          description: List of phones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Phone'
+  /phones/{identifier}:
+    get:
+      summary: Get phone by identifier
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Phone found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+        '404':
+          description: Phone not found
+  /phones/{identifier}/characteristics:
+    put:
+      summary: Update phone characteristics
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Characteristic'
+      responses:
+        '200':
+          description: Phone updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Phone'
+        '404':
+          description: Phone not found
+components:
+  schemas:
+    Characteristic:
+      type: object
+      properties:
+        ram_memory:
+          type: number
+        rom_memory:
+          type: number
+      required:
+        - ram_memory
+        - rom_memory
+    Phone:
+      type: object
+      properties:
+        identifier:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        characteristics:
+          $ref: '#/components/schemas/Characteristic'
+      required:
+        - identifier
+        - brand
+        - model
+        - characteristics
